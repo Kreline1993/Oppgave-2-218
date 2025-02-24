@@ -4,7 +4,7 @@
 - Magi Natasha Nakangi
 - Martin Brådland  
 - Natasha Engemann 
-- Truls Iver Michalsen Iversen 
+- Truls Iver M. Iversen 
 
 ## Introduksjon
 I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om vindkraftverk 
