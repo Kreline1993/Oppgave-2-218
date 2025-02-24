@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
 }
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -8,8 +9,59 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const SUPABASE_URL = "https://irjkbtzxauknnyxjrqxs.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyamtidHp4YXVrbm55eGpycXhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkyNzM2NDIsImV4cCI6MjA1NDg0OTY0Mn0.BNHPaXLCS6q1uCQJgWo6Be_33x2A3_iPcq8r3O9SmtY";
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function loadData() {
+            let { data, error } = await supabase.from("Vindkraftverk").select("*");
+            if (error) {
+                console.error("Supabase Error:", error);
+            } else {
+                console.log("Data from Supabase:", data);
+            }
+        }
+
+        loadData();
+    </script>
+
 </head>
 <body>
     <div id="map"></div>
-</body>
 
+    <script>
+        const SUPABASE_URL = "postgresql://postgres.irjkbtzxauknnyxjrqxs:gruppe81234@aws-0-us-west-1.pooler.supabase.com:6543/postgres";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyamtidHp4YXVrbm55eGpycXhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkyNzM2NDIsImV4cCI6MjA1NDg0OTY0Mn0.BNHPaXLCS6q1uCQJgWo6Be_33x2A3_iPcq8r3O9SmtY";
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const map = L.map('map').setView([59.0, 10.0], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        async function loadGeoJSON() {
+            const { data, error } = await supabase.rpc("get_geojson");
+
+            if (error) {
+                console.error("Error fetching data:", error);
+                return;
+            }
+
+            if (data) {
+                L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties) {
+                            layer.bindPopup(`<b>${feature.properties.name}</b>`);
+                        }
+                    }
+                }).addTo(map);
+            }
+        }
+
+        loadGeoJSON();
+    </script>
+</body>
