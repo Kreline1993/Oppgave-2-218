@@ -37,15 +37,21 @@ var googleLabels = L.tileLayer('https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={
     attribution: '&copy; Google</a>'
 }).addTo(map);
 
-//layer control
+// Layer control
 var baseMaps = {
-    "kartverket" : kartverket
+    "kartverket": kartverket
 };
 
+map.addLayer(windSource);
+map.addLayer(terrainComp);
+map.addLayer(googleLabels);
+
 var overlayMaps = {
-    "wind Source" : windSource,
+    "wind Source": windSource,
     "terrain Complexity": terrainComp,
     "google Labels": googleLabels
 };
 
-L.control.layers(baseMaps, overlayMaps).addTo(map);
+var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+map.removeLayer(terrainComp);
