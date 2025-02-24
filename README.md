@@ -1,10 +1,10 @@
 # Oppgave 2: Geografisk IT-utvikling - Gruppe 8
 ## Gruppemedlemmer
-- Kevin Grefstad Gundersen 
-- Magi Natasha Nakangi 
+- Kevin Grefstad Gundersen
+- Magi Natasha Nakangi
+- Martin Brådland  
 - Natasha Engemann 
 - Truls Iver Michalsen Iversen 
-- Martin Brådland 
 
 ## Introduksjon
 I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om vindkraftverk 
