@@ -10,7 +10,7 @@ L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/
     attribution: '&copy; Kartverket</a>'
 }).addTo(map);
 
-// Tilelayer for wind resources
+// Add the WMS layer for wind resources.
 L.tileLayer.wms("https://nve.geodataonline.no/arcgis/services/Vindressurser/MapServer/WMSServer", {
     // Replace '0' with the actual layer name as defined in the GetCapabilities document
     layers: "Gj.snittlig_vindstyrke_120m_over_bakkeniva",
