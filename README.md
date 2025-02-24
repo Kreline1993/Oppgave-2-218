@@ -10,7 +10,7 @@
 I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om vindkraftverk i Agder.
 
 ## Problemstilling
-Hvordan kan vindkraftressursene i Agder utnyttes p? en b?rekraftig og effektiv måte for kraftproduksjon, samtidig som hensynet til vernede naturområder og landskapsverdier ivaretas?
+Hvordan kan vindkraftressursene i Agder utnyttes på en bærekraftig og effektiv måte for kraftproduksjon, samtidig som hensynet til vernede naturområder og landskapsverdier ivaretas?
 
 Denne problemstillingen tar for seg hvilke omr?der i Agder som har størst potensial for vindkraftproduksjon, samt hvordan man kan balansere utbygging med miljøhensyn og lokal acceptans.
 
