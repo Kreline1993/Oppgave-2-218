@@ -2,7 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-var map = L.map('map').setView([58.1633, 8.0025], 16);
+var map = L.map('map').setView([58.1633, 8.0025], 8);
 
 //Kartverket
 L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
@@ -27,7 +27,8 @@ L.tileLayer.wms("https://nve.geodataonline.no/arcgis/services/Vindressurser/MapS
     format: "image/png",
     transparent: true,
     attribution: "NVE Geodata Online",
-    opacity: 0
+    opacity: 1,
+    className: 'blend-layer'
 }).addTo(map);
 
 //Google labels
