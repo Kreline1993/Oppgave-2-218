@@ -15,7 +15,7 @@ Hvordan kan vindkraftressursene i Agder utnyttes på en bærekraftig og effektiv m
 Denne problemstillingen tar for seg hvilke omr?der i Agder som har størst potensial for vindkraftproduksjon, samt hvordan man kan balansere utbygging med miljøhensyn og lokal acceptans.
 
 ## Valg av teknologier
-I prosjektet v?rt har vi valgt å bruke Visual Studio, som utviklingsmiljø, ettersom vi allerede har erfaring med plattformen. Det var viktig for oss å bygge videre på vår eksisterende kunnskap for å arbeide mer effektivt og fokusere på selve utviklingsprosessen fremfor å bruke tid på å lære et nytt verktøy.
+I prosjektet vårt har vi valgt å bruke Visual Studio, som utviklingsmiljø, ettersom vi allerede har erfaring med plattformen. Det var viktig for oss å bygge videre på vår eksisterende kunnskap for å arbeide mer effektivt og fokusere på selve utviklingsprosessen fremfor å bruke tid på å lære et nytt verktøy.
 
 For kartvisning og håndtering av geografiske data har vi valgt Leaflet, ettersom vi også har tidligere erfaring med dette biblioteket. Leaflet er fleksibelt og godt egnet for vår bruk, samtidig som det gir oss frihet til å tilpasse kartløsningen etter behov.
 
