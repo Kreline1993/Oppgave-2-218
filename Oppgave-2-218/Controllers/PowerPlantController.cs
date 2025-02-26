@@ -36,6 +36,29 @@ namespace Oppgave_2_218.Controllers
             }
         }
 
+        // GET: PowerPlant/Map
+        public IActionResult Map()
+        {
+            return View();
+        }
+
+        // GET: PowerPlant/GeoJson
+        [HttpGet]
+        public async Task<IActionResult> GeoJson()
+        {
+            try
+            {
+                var geoJson = await _powerPlantService.GetPowerPlantsGeoJsonAsync();
+                _logger.LogInformation($"GeoJSON data: {geoJson}");
+                return Content(geoJson, "application/json");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving GeoJSON data");
+                return StatusCode(500, "Failed to retrieve geographic data");
+            }
+        }
+
         // GET: PowerPlant/Details/5
         public async Task<IActionResult> Details(int id)
         {

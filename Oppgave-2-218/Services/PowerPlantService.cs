@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using Oppgave_2_218.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Oppgave_2_218.Services
 {
@@ -12,13 +14,52 @@ namespace Oppgave_2_218.Services
         private readonly string _supabaseUrl;
         private readonly string _supabaseKey;
         private readonly RestClient _client;
-        private const string TABLE_NAME = "Vindkraftverk"; // Update this to match your actual table name in Supabase
+        private string _tableName;
 
         public PowerPlantService(IConfiguration configuration)
         {
             _supabaseUrl = configuration["Supabase:Url"];
             _supabaseKey = configuration["Supabase:ApiKey"];
             _client = new RestClient(_supabaseUrl);
+            _tableName = "Vindkraftverk"; // Will be set by SetTableName
+        }
+
+        /// <summary>
+        /// Set the table name for this service
+        /// </summary>
+        public void SetTableName(string tableName)
+        {
+            _tableName = tableName;
+        }
+
+        /// <summary>
+        /// Get all tables in the database
+        /// </summary>
+        public async Task<List<string>> GetTablesAsync()
+        {
+            try
+            {
+                var request = new RestRequest("/rest/v1/");
+                request.Method = Method.Get;
+
+                request.AddHeader("apikey", _supabaseKey);
+                request.AddHeader("Authorization", $"Bearer {_supabaseKey}");
+
+                var response = await _client.ExecuteAsync(request);
+
+                if (!response.IsSuccessful)
+                {
+                    throw new Exception($"Failed to retrieve tables: {response.Content}");
+                }
+
+                var tables = JObject.Parse(response.Content);
+                return tables.Properties().Select(p => p.Name).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting tables: {ex.Message}");
+                return new List<string>();
+            }
         }
 
         /// <summary>
@@ -34,7 +75,12 @@ namespace Oppgave_2_218.Services
         /// </summary>
         public async Task<List<PowerPlant>> GetPowerPlantsAsync(string filterColumn = null, string filterOperator = null, string filterValue = null)
         {
-            var request = new RestRequest($"/rest/v1/{TABLE_NAME}");
+            if (string.IsNullOrEmpty(_tableName))
+            {
+                throw new Exception("Table name has not been set. Call SetTableName first or check available tables with GetTablesAsync.");
+            }
+
+            var request = new RestRequest($"/rest/v1/{_tableName}");
             request.Method = Method.Get;
 
             // Add Supabase headers
@@ -42,7 +88,7 @@ namespace Oppgave_2_218.Services
             request.AddHeader("Authorization", $"Bearer {_supabaseKey}");
             request.AddHeader("Content-Type", "application/json");
 
-            // Add basic select
+            // Add basic select to get all columns including geojson
             request.AddQueryParameter("select", "*");
 
             // Add filtering if provided
@@ -57,10 +103,56 @@ namespace Oppgave_2_218.Services
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve power plant data: {response.ErrorMessage ?? response.Content}");
+                throw new Exception($"Failed to retrieve power plant data: {response.Content}");
             }
 
             return JsonConvert.DeserializeObject<List<PowerPlant>>(response.Content);
+        }
+
+        /// <summary>
+        /// Get GeoJSON feature collection for all power plants
+        /// </summary>
+        public async Task<string> GetPowerPlantsGeoJsonAsync()
+        {
+            var powerPlants = await GetAllPowerPlantsAsync();
+
+            // Log how many plants have valid coordinates
+            var plantsWithCoordinates = powerPlants.Where(p => p.GetWGS84Coordinates().HasValue).ToList();
+            Console.WriteLine($"Found {plantsWithCoordinates.Count} plants with valid coordinates out of {powerPlants.Count} total");
+
+            // Create GeoJSON feature collection
+            var featureCollection = new
+            {
+                type = "FeatureCollection",
+                features = plantsWithCoordinates
+                    .Select(p =>
+                    {
+                        var wgs84 = p.GetWGS84Coordinates().Value;
+                        Console.WriteLine($"Plant {p.Id}: Lat={wgs84.Lat}, Lng={wgs84.Lng}");
+
+                        return new
+                        {
+                            type = "Feature",
+                            geometry = new
+                            {
+                                type = "Point",
+                                coordinates = new double[] { wgs84.Lng, wgs84.Lat }
+                            },
+                            properties = new
+                            {
+                                id = p.Id,
+                                name = p.SakTittel,
+                                status = p.Status,
+                                effect = p.EffektMw,
+                                municipality = p.KommuneNavn,
+                                county = p.FylkesNavn,
+                                turbines = p.TotalAntTurbiner
+                            }
+                        };
+                    }).ToArray()
+            };
+
+            return JsonConvert.SerializeObject(featureCollection);
         }
 
         /// <summary>
