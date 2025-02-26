@@ -1,6 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Oppgave_2_218.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace Oppgave_2_218.Controllers
 {
