@@ -1,7 +1,17 @@
+using Supabase;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//add supabase
+builder.Services.AddSingleton<Client>(provider => {
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var supabaseUrl = configuration["Supabase:Url"];
+    var supabaseKey = configuration["Supabase:Key"];
+    return new Client(supabaseUrl, supabaseKey);
+});
 
 // Register the PowerPlantService
 builder.Services.AddScoped<Oppgave_2_218.Services.PowerPlantService>();

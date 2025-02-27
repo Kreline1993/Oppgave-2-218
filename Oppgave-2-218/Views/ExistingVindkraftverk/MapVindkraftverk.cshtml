@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Vindkraftverk Map";
+}
+
+<div class="container">
+    <h2>Vindkraftverk Map</h2>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <style>
+        #map {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize the map with Sweden as center point
+            var map = L.map('map').setView([63.0, 16.0], 5);
+
+            // Add the OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+            }).addTo(map);
+
+            // Fetch the data from the controller
+            $.ajax({
+                url: '@Url.Action("GetVindkraftverkData", "Vindkraftverk")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Process each item in the data
+                    data.forEach(function (item) {
+                        try {
+                            // Parse the GeoJSON string from the database
+                            var geoJsonData = JSON.parse(item.coordGeoJson);
+
+                            // Add the GeoJSON to the map
+                            L.geoJSON(geoJsonData, {
+                                style: function (feature) {
+                                    return {
+                                        color: "#3388ff",
+                                        weight: 2,
+                                        opacity: 1,
+                                        fillOpacity: 0.5
+                                    };
+                                },
+                                onEachFeature: function (feature, layer) {
+                                    // You can customize the popup with additional information from your database
+                                    var popupContent = "<div><strong>ID: </strong>" + item.id + "</div>";
+
+                                    // Add additional fields from your database if needed
+                                    // if (item.name) {
+                                    //     popupContent += "<div><strong>Name: </strong>" + item.name + "</div>";
+                                    // }
+
+                                    layer.bindPopup(popupContent);
+                                }
+                            }).addTo(map);
+                        } catch (e) {
+                            console.error("Error parsing GeoJSON for item:", item, e);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                    alert("Failed to load data. Please check the console for details.");
+                }
+            });
+        });
+    </script>
+}
