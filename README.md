@@ -57,4 +57,11 @@ en solid løsning samtidig som vi får muligheten til å utvide vår tekniske ko
 
 ## Hvordan løsningen bli implementert
 
+### Database
+Vi laget en database på Supabase. Da laget vi en tabell, som kalles vi "Vindkraftverk", dette er datasett fra NVE og inneholder om vindkraftverk i Norge. Deretter transformerte vi geometry data til geosjon ved bruk av den innbygdt SQL editor. Først laget vi en ny kolon til å holde denne nye datatypen. Data måtte gjøres om til riktig SRID, fordi geojson trenger 4623 og eksisterende data var i 32633. Da dataen har riktig SRID kunne de lagres som json datatype.
+
+### Applikasjon
+Først opprettet vi en .Net 8 MVC app i Visual Studio, det blir grunnlaget til applikasjonen. 
+- kartlag
+- points på kart
 ## Screenshots av løsningen
