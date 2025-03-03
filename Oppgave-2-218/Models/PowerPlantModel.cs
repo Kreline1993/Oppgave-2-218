@@ -18,7 +18,7 @@ namespace Oppgave_2_218.Models
         public string Tiltakshaver { get; set; }
         public int SakKategori { get; set; }
         public string Status { get; set; }
-        public double EffektMw { get; set; }
+        public double Effekt_Mw { get; set; }
         public double EffektIdriftMw { get; set; }
         public double ForventetProduksjonGwh { get; set; }
         public string SakLenke { get; set; }

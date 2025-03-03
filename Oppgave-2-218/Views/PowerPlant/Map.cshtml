@@ -2,7 +2,6 @@
     ViewData["Title"] = "Power Plant Map";
 }
 
-
 <div class="container-fluid">
     <h1>Power Plant Map</h1>
 
@@ -24,8 +23,10 @@
 
     <script>
         // Initialize the map centered on Norway
-        // Write your JavaScript code.
         var map = L.map('map').setView([58.1633, 8.0025], 8);
+        
+        // Create layer group for power plants
+        var powerPlantsLayer = L.layerGroup();
 
         //Kartverket
         var kartverket = L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
@@ -35,7 +36,6 @@
 
         // Tilelayer for wind resources
         var windSource = L.tileLayer.wms("https://nve.geodataonline.no/arcgis/services/Vindressurser/MapServer/WMSServer", {
-            // Replace '0' with the actual layer name as defined in the GetCapabilities document
             layers: "Gj.snittlig_vindstyrke_120m_over_bakkeniva",
             format: "image/png",
             transparent: true,
@@ -45,7 +45,6 @@
 
         // Add the WMS layer for terrain complexity
         var terrainComp = L.tileLayer.wms("https://nve.geodataonline.no/arcgis/services/Vindressurser/MapServer/WMSServer", {
-            // Replace '0' with the actual layer name as defined in the GetCapabilities document
             layers: "Terrengkompleksitet_RIX",
             format: "image/png",
             transparent: true,
@@ -62,21 +61,23 @@
 
         // Layer control
         var baseMaps = {
-            "kartverket": kartverket
+            "Kartverket": kartverket
         };
-
-        map.addLayer(windSource);
-        map.addLayer(terrainComp);
-        map.addLayer(googleLabels);
 
         var overlayMaps = {
-            "wind Source": windSource,
-            "terrain Complexity": terrainComp,
-            "google Labels": googleLabels
+            "Wind Resources": windSource,
+            "Terrain Complexity": terrainComp,
+            "Google Labels": googleLabels,
+            "Power Plants": powerPlantsLayer  // Add our power plants layer group
         };
 
+        // Add power plants layer to the map
+        map.addLayer(powerPlantsLayer);
+        
+        // Create the layer control and add it to the map
         var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+        // Initially hide terrain complexity layer
         map.removeLayer(terrainComp);
 
         // Function to create popup content
@@ -87,7 +88,6 @@
                     <h5>${props.name}</h5>
                     <p><strong>Status:</strong> ${props.status}</p>
                     <p><strong>Effect:</strong> ${props.effect} MW</p>
-                    <p><strong>Turbines:</strong> ${props.turbines}</p>
                     <p><strong>Municipality:</strong> ${props.municipality}</p>
                     <p><strong>County:</strong> ${props.county}</p>
                     <a href="/PowerPlant/Details/${props.id}" class="btn btn-sm btn-info">Details</a>
@@ -109,7 +109,7 @@
                 console.log('GeoJSON data received:', data);
                 console.log('Features count:', data.features ? data.features.length : 0);
 
-                // Add GeoJSON layer to map
+                // Add GeoJSON layer to power plants layer group instead of directly to map
                 L.geoJSON(data, {
                     pointToLayer: function (feature, latlng) {
                         console.log('Processing feature:', feature);
@@ -125,50 +125,13 @@
                     onEachFeature: function (feature, layer) {
                         layer.bindPopup(createPopupContent(feature));
                     }
-                }).addTo(map);
+                }).addTo(powerPlantsLayer); // Add to layer group instead of map
             })
             .catch(error => {
                 console.error('Error loading GeoJSON data:', error);
                 alert('Failed to load map data. Please try again later.');
             });
 
-        // Test point
-        var testPoint = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [10.7522, 59.9139]  // Oslo coordinates
-                },
-                "properties": {
-                    "id": 999,
-                    "name": "Test Power Plant",
-                    "status": "I drift",
-                    "effect": 100,
-                    "municipality": "Oslo",
-                    "county": "Oslo",
-                    "turbines": 10
-                }
-            }]
-        };
-
-        // Add test point
-        L.geoJSON(testPoint, {
-            pointToLayer: function (feature, latlng) {
-                console.log('Test point:', latlng);
-                return L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: '#FF0000',
-                    color: '#000',
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                });
-            },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup(createPopupContent(feature));
-            }
-        }).addTo(map);
+        // Test point has been removed
     </script>
 }

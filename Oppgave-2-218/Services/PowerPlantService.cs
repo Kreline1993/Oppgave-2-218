@@ -163,7 +163,7 @@ namespace Oppgave_2_218.Services
                                 id = p.Id,
                                 name = p.SakTittel,
                                 status = p.Status,
-                                effect = p.EffektMw,
+                                effect = p.Effekt_Mw,
                                 municipality = p.KommuneNavn,
                                 county = p.FylkesNavn,
                                 turbines = p.TotalAntTurbiner
