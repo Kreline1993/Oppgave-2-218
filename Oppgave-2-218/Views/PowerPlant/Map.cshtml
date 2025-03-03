@@ -2,6 +2,7 @@
     ViewData["Title"] = "Power Plant Map";
 }
 
+
 <div class="container-fluid">
     <h1>Power Plant Map</h1>
 
@@ -23,12 +24,60 @@
 
     <script>
         // Initialize the map centered on Norway
-        var map = L.map('map').setView([65.5, 17.0], 5);
+        // Write your JavaScript code.
+        var map = L.map('map').setView([58.1633, 8.0025], 8);
 
-        // Add OSM base layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        //Kartverket
+        var kartverket = L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
+            maxZoom: 19,
+            attribution: '&copy; Kartverket</a>'
         }).addTo(map);
+
+        // Tilelayer for wind resources
+        var windSource = L.tileLayer.wms("https://nve.geodataonline.no/arcgis/services/Vindressurser/MapServer/WMSServer", {
+            // Replace '0' with the actual layer name as defined in the GetCapabilities document
+            layers: "Gj.snittlig_vindstyrke_120m_over_bakkeniva",
+            format: "image/png",
+            transparent: true,
+            attribution: "NVE Geodata Online",
+            opacity: 1
+        }).addTo(map);
+
+        // Add the WMS layer for terrain complexity
+        var terrainComp = L.tileLayer.wms("https://nve.geodataonline.no/arcgis/services/Vindressurser/MapServer/WMSServer", {
+            // Replace '0' with the actual layer name as defined in the GetCapabilities document
+            layers: "Terrengkompleksitet_RIX",
+            format: "image/png",
+            transparent: true,
+            attribution: "NVE Geodata Online",
+            opacity: 1,
+            className: 'blend-layer'
+        }).addTo(map);
+
+        //Google labels
+        var googleLabels = L.tileLayer('https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}', {
+            maxZoom: 19,
+            attribution: '&copy; Google</a>'
+        }).addTo(map);
+
+        // Layer control
+        var baseMaps = {
+            "kartverket": kartverket
+        };
+
+        map.addLayer(windSource);
+        map.addLayer(terrainComp);
+        map.addLayer(googleLabels);
+
+        var overlayMaps = {
+            "wind Source": windSource,
+            "terrain Complexity": terrainComp,
+            "google Labels": googleLabels
+        };
+
+        var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        map.removeLayer(terrainComp);
 
         // Function to create popup content
         function createPopupContent(feature) {
