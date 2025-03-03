@@ -32,7 +32,7 @@ namespace Oppgave_2_218.Controllers
             {
                 var response = await _supabaseClient
                     .From<ExistingVindkraftverk>()
-                    .Select("coord_geojson")
+                    .Select("id, coord_geojson")
                     .Get();
 
                 var vindkraftverks = response.Models;

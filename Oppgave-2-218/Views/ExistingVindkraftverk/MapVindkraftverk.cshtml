@@ -32,7 +32,7 @@
 
             // Fetch the data from the controller
             $.ajax({
-                url: '@Url.Action("GetVindkraftverkData", "Vindkraftverk")',
+                url: '@Url.Action("GetVindkraftverkData", "ExistingVindkraftverk")',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -40,7 +40,7 @@
                     data.forEach(function (item) {
                         try {
                             // Parse the GeoJSON string from the database
-                            var geoJsonData = JSON.parse(item.coordGeoJson);
+                            var geoJsonData = JSON.parse(item.coord_GeoJson);
 
                             // Add the GeoJSON to the map
                             L.geoJSON(geoJsonData, {
