@@ -21,7 +21,7 @@ namespace Oppgave_2_218.Services
             _supabaseUrl = configuration["Supabase:Url"];
             _supabaseKey = configuration["Supabase:ApiKey"];
             _client = new RestClient(_supabaseUrl);
-            _tableName = "Vindkraftverk"; // Will be set by SetTableName
+            _tableName = "Vindkraftverk"; // Default table name
         }
 
         /// <summary>
@@ -106,7 +106,25 @@ namespace Oppgave_2_218.Services
                 throw new Exception($"Failed to retrieve power plant data: {response.Content}");
             }
 
-            return JsonConvert.DeserializeObject<List<PowerPlant>>(response.Content);
+            // For debugging, output the first portion of the response
+            Console.WriteLine($"Sample of response data: {response.Content.Substring(0, Math.Min(200, response.Content.Length))}");
+
+            try
+            {
+                var powerPlants = JsonConvert.DeserializeObject<List<PowerPlant>>(response.Content);
+                Console.WriteLine($"Successfully deserialized {powerPlants.Count} power plants");
+
+                // Check how many have valid GeoJSON data
+                int plantsWithGeoJson = powerPlants.Count(p => p.CoordGeoJson != null);
+                Console.WriteLine($"{plantsWithGeoJson} plants have CoordGeoJson data");
+
+                return powerPlants;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializing power plants: {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -115,28 +133,30 @@ namespace Oppgave_2_218.Services
         public async Task<string> GetPowerPlantsGeoJsonAsync()
         {
             var powerPlants = await GetAllPowerPlantsAsync();
-
-            // Log how many plants have valid coordinates
-            var plantsWithCoordinates = powerPlants.Where(p => p.GetWGS84Coordinates().HasValue).ToList();
-            Console.WriteLine($"Found {plantsWithCoordinates.Count} plants with valid coordinates out of {powerPlants.Count} total");
+            Console.WriteLine($"Retrieved {powerPlants.Count} power plants from database");
 
             // Create GeoJSON feature collection
             var featureCollection = new
             {
                 type = "FeatureCollection",
-                features = plantsWithCoordinates
+                features = powerPlants
                     .Select(p =>
                     {
-                        var wgs84 = p.GetWGS84Coordinates().Value;
-                        Console.WriteLine($"Plant {p.Id}: Lat={wgs84.Lat}, Lng={wgs84.Lng}");
+                        var coords = p.GetWGS84Coordinates();
+                        if (!coords.HasValue)
+                        {
+                            Console.WriteLine($"Plant {p.Id} ({p.SakTittel}): No valid coordinates found");
+                            return null;
+                        }
 
+                        Console.WriteLine($"Plant {p.Id} ({p.SakTittel}): Using coordinates [{coords.Value.Lng}, {coords.Value.Lat}]");
                         return new
                         {
                             type = "Feature",
                             geometry = new
                             {
                                 type = "Point",
-                                coordinates = new double[] { wgs84.Lng, wgs84.Lat }
+                                coordinates = new double[] { coords.Value.Lng, coords.Value.Lat }
                             },
                             properties = new
                             {
@@ -149,9 +169,12 @@ namespace Oppgave_2_218.Services
                                 turbines = p.TotalAntTurbiner
                             }
                         };
-                    }).ToArray()
+                    })
+                    .Where(feature => feature != null)
+                    .ToArray()
             };
 
+            Console.WriteLine($"Created GeoJSON with {featureCollection.features.Length} features");
             return JsonConvert.SerializeObject(featureCollection);
         }
 
