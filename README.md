@@ -7,7 +7,7 @@
 - Truls Iver M. Iversen 
 
 ## Introduksjon
-I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om eksisteernde vindkraftverk 
+I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om eksisterende vindkraftverk 
 i Agder, og hvor det kan være gjennomførbart å lage nye vindkraftverk.
 
 ## Problemstilling
