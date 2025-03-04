@@ -7,8 +7,8 @@
 - Truls Iver M. Iversen 
 
 ## Introduksjon
-I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om vindkraftverk 
-i Agder.
+I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om eksisteernde vindkraftverk 
+i Agder, og hvor det kan være gjennomførbart å lage nye vindkraftverk.
 
 ## Problemstilling
 Hvordan kan vindkraftressursene i Agder utnyttes på en bærekraftig og effektiv 
