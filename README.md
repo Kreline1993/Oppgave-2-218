@@ -1,10 +1,4 @@
 # Oppgave 2: Geografisk IT-utvikling - Gruppe 8
-## Gruppemedlemmer
-- Kevin Grefstad Gundersen
-- Magi Natasha Nakangi
-- Martin Brådland  
-- Natasha Engemann 
-- Truls Iver M. Iversen
 
 ## Innholdsfortegnelse
 - Introduksjon
