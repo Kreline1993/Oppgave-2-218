@@ -121,4 +121,7 @@ Dette er en visning av sammensatt lag, eksisterende vindkraftverk, beskyttede na
 
 Visning av sammensatt lag, eksisterende vindkraftverk, beskyttet områder, og terreng kompleksitet, dette gir også muligheten til å vurdere hvor man kan bygge nye vindkraftverk.
 
+## Installasjonsguide til applikasjon
+
+
 
