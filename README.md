@@ -4,7 +4,18 @@
 - Magi Natasha Nakangi
 - Martin Brådland  
 - Natasha Engemann 
-- Truls Iver M. Iversen 
+- Truls Iver M. Iversen
+
+## Innholdsfortegnelse
+- Introduksjon
+- Problemstilling
+- Valg av teknologier
+- Valg av datasett
+- Hvordan løsningen bli implementert
+    - Datasett
+    - Applikasjon
+- Screenshots av løsningen
+- Installasjonsguide til applikasjon
 
 ## Introduksjon
 I denne oppgaven skal vi lage en webapplikasjon som viser informasjon om eksisterende vindkraftverk 
