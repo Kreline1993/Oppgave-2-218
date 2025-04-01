@@ -28,7 +28,7 @@ landskapsverdier ivaretas?
 
 Denne problemstillingen tar for seg hvilke områder i Agder som har størst potensial for
 vindkraftproduksjon, samt hvordan man kan balansere utbygging med miljøhensyn og lokal 
-acceptans.
+godkjennelse.
 
 ## Valg av teknologier
 I prosjektet vårt har vi valgt å bruke Visual Studio, som utviklingsmiljø, ettersom vi 
